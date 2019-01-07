@@ -1,5 +1,8 @@
 // pages/authorize/index.js
+import route from '../../utils/route'
 var app = getApp();
+const API = 'http://localhost:8080/'
+
 Page({
 
   /**
@@ -66,12 +69,10 @@ Page({
   },
   bindGetUserInfo: function (e) {
     if (!e.detail.userInfo) {
-      console.log("BBB")
       return;
     }
     if (app.globalData.isConnected) {
       wx.setStorageSync('userInfo', e.detail.userInfo)
-      console.log("AAAA")
       this.login();
     } else {
       wx.showToast({
@@ -82,27 +83,7 @@ Page({
   },
   login: function () {
     let that = this;
-    let token = wx.getStorageSync('token');
-    console.log("CCC")
-    console.log("TOKEN" + token)
-    if (token) {
-      wx.request({
-        url: 'https://api.it120.cc/' + app.globalData.subDomain + '/user/check-token',
-        data: {
-          token: token
-        },
-        success: function (res) {
-          if (res.data.code != 0) {
-            wx.removeStorageSync('token')
-            that.login();
-          } else {
-            // 回到原来的地方放
-            wx.navigateBack();
-          }
-        }
-      })
-      return;
-    }
+    console.log("comming")
     wx.login({
       success: function (res) {
         console.log(res.code)
@@ -117,7 +98,7 @@ Page({
             if (res.data.openid) {
               // 去注册
               that.registerUser(openid, sessionKey);
-              return;
+              return ;
             }
             if (res.data.code != 0) {
               // 登录错误
@@ -129,10 +110,6 @@ Page({
               })
               return;
             }
-            wx.setStorageSync('token', res.data.data.token)
-            wx.setStorageSync('uid', res.data.data.uid)
-            // 回到原来的地方放
-            wx.navigateBack();
           }
         })
       }
@@ -157,23 +134,34 @@ Page({
               data: { sessionKey: sessionKey, signature: signature, rawData: rawData, encryptedData: encryptedData, iv: iv },
               // 设置请求的 参数
               success: (res) => {
-                /*wx.request({
-                  url: 'http://localhost:8080/wx/user/select',
-                  data: {"openId" : res.data.openId},
-                  success: (res) => {
-                    console.log('qwer:' + JSON.stringify(res))
+                //console.log('res:' + JSON.stringify(res))
+                if (res.data.code == 0) {
+                  console.log(res)
+                  wx.setStorageSync('userInfo', res.data.userInfo)
+                  wx.setStorageSync('token', res.data.token)
+                  // 登录成功
+                  wx.hideLoading();
+                  //wx.setStorageSync('tokensw', res.data.data.token)
+                  //wx.setStorageSync('uid', res.data.data.uid)
+                  // 回到原来的地方放
+                  wx.navigateBack();
+                  return
+                }
+                else{
+                    // 登录错误
+                    wx.hideLoading();
+                    wx.showModal({
+                      title: '提示',
+                      content: '无法登陆，请联系商家',
+                      showCancel: false
+                    })
+                    return;
                   }
-                })*/
-                console.log('rwqeqweqw2es:' + JSON.stringify(res))
-                console.log('tokenssawsaw:')
-                wx.hideLoading();
-               // that.login();
               }
             })
           }
         })
       }
-    })
+      })
   }
-  
 })

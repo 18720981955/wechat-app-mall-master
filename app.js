@@ -1,4 +1,6 @@
 //app.js
+import route from 'utils/route'
+const API = 'http://localhost:8080/'
 App({
   onLaunch: function () {
     var that = this;
@@ -36,6 +38,7 @@ App({
         })
       } else {
         that.globalData.isConnected = true
+        that.goStartIndexPage()
         wx.hideToast()
       }
     });       
@@ -89,21 +92,11 @@ App({
     // 判断是否登录
     let token = wx.getStorageSync('token');
     if (token) {
+        console.log("gettoken")
+        that.checkToken(token)
+      } else {
       that.goLoginPageTimeOut()
-      return
-    }
-    wx.request({
-      url: 'https://api.it120.cc/' + that.globalData.subDomain + '/user/check-token',
-      data: {
-        token: token
-      },
-      success: function (res) {
-        if (res.data.code != 0) {
-          wx.removeStorageSync('token')
-          that.goLoginPageTimeOut()
-        }
       }
-    })
   } ,
   sendTempleMsg: function (orderId, trigger, template_id, form_id, page, postJsonString){
     var that = this;
@@ -154,11 +147,12 @@ App({
     })
   },  
   goLoginPageTimeOut: function () {
+    console.log("wewer")
     setTimeout(function(){
       wx.navigateTo({
         url: "/pages/authorize/index"
       })
-    }, 1000)    
+    }, 100)
   },
   goStartIndexPage: function () {
     setTimeout(function () {
@@ -175,7 +169,28 @@ App({
     appid: "wxa46b09d413fbcaff", // 您的小程序的appid
     shareProfile: '百款精品商品，总有一款适合您', // 首页转发的时候话术
     isConnected: true // 网络是否连接
-  }
+  },
+  checkToken: function (token) {
+      var that = this;
+      wx.request({
+        url: API + route.R_checkToken,
+        header: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": token,
+        },
+        success: function (res) {
+          if (res.data.code != 0) {
+            wx.removeStorageSync('token')
+            that.goLoginPageTimeOut()
+          } else {
+            // 回到原来的地方放
+            //wx.navigateBack();
+            wx.getStorageSync('userInfo')
+            that.goStartIndexPage()
+          }
+        }
+      })
+    }  
   /*
   根据自己需要修改下单时候的模板消息内容设置，可增加关闭订单、收货时候模板消息提醒；
   1、/pages/to-pay-order/index.js 中已添加关闭订单、商家发货后提醒消费者；

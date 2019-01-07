@@ -24,7 +24,7 @@ Page({
     wx.setNavigationBarTitle({
       title: wx.getStorageSync('mallName')
     })
-  },/*
+  },
   onShow:function(){
     let that = this
     let userInfo = wx.getStorageSync('userInfo')
@@ -37,7 +37,7 @@ Page({
         userInfo: userInfo
       })
     }
-  },*/
+  },
   onReady: function(){
     var that = this;
     setTimeout(function(){

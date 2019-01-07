@@ -27,11 +27,11 @@
     "onReachBottomDistance":50
   },
   "tabBar": {
-    "color": "#6e6d6b",
-    "selectedColor": "#e64340",
-    "borderStyle": "white",
-    "backgroundColor": "#fff",
-    "box-shadow":"0 0 6px 0",
+    "color": "#b2b2b2",
+    "selectedColor": "#993399",
+    "backgroundColor": "#fdfdfd",
+    "borderStyle": "black",
+    "position": "bottom",
     "list": [{
      "pagePath": "pages/index/index",
       "iconPath": "images/nav/home-off.png",
