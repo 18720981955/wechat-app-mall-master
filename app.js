@@ -33,14 +33,13 @@ App({
           icon: 'loading',
           duration: 2000,
           complete: function() {
-            that.goStartIndexPage()
           }
         })
       } else {
         that.globalData.isConnected = true
-        that.goStartIndexPage()
         wx.hideToast()
       }
+      wx.removeStorageSync('userInfo')
     });       
     //  获取商城名称
     wx.request({
@@ -155,6 +154,7 @@ App({
     }, 100)
   },
   goStartIndexPage: function () {
+    console.log("wewer2")
     setTimeout(function () {
       wx.redirectTo({
         url: "/pages/start/start"
@@ -183,9 +183,8 @@ App({
             wx.removeStorageSync('token')
             that.goLoginPageTimeOut()
           } else {
-            // 回到原来的地方放
+            // 跳转到首页
             //wx.navigateBack();
-            wx.getStorageSync('userInfo')
             that.goStartIndexPage()
           }
         }

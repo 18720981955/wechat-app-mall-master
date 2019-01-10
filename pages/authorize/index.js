@@ -144,7 +144,9 @@ Page({
                   //wx.setStorageSync('tokensw', res.data.data.token)
                   //wx.setStorageSync('uid', res.data.data.uid)
                   // 回到原来的地方放
-                  wx.navigateBack();
+                  wx.navigateTo({
+                    url: "/pages/start/start"
+                  })
                   return
                 }
                 else{
